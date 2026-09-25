@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import {
-  Wallet, Calendar, CheckCircle, AlertCircle, Clock, TrendingUp,
+  Wallet, Calendar, CheckCircle, AlertCircle, TrendingUp,
   Send, Upload, X, FileText, Banknote, Trash2
 } from 'lucide-react';
 
