@@ -25,7 +25,7 @@ export default function Register() {
     setLoading(true);
     try {
       await register({ ...form, role });
-      navigate('/dashboard');
+      navigate('/profile');
     } catch (err) {
       setError(err.response?.data?.message || 'خطأ في التسجيل');
     } finally {
@@ -33,7 +33,6 @@ export default function Register() {
     }
   };
 
-  // الحقول تتغير حسب الدور
   const studentFields = [
     { name: 'name', icon: User, placeholder: 'الاسم الكامل', type: 'text' },
     { name: 'email', icon: Mail, placeholder: 'البريد الإلكتروني', type: 'email' },
@@ -67,7 +66,6 @@ export default function Register() {
           <p className="opacity-60 text-sm">انضم إلى بوابة الجامعة</p>
         </div>
 
-        {/* اختيار الدور */}
         <div className="mb-5">
           <label className="block text-sm mb-2 opacity-80 text-center">اختر نوع الحساب</label>
           <div className="grid grid-cols-2 gap-3">

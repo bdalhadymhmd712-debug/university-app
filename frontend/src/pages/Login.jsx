@@ -17,7 +17,7 @@ export default function Login() {
     setLoading(true);
     try {
       await login(email, password);
-      navigate('/dashboard');
+      navigate('/profile');
     } catch (err) {
       setError(err.response?.data?.message || 'خطأ في الدخول');
     } finally {
