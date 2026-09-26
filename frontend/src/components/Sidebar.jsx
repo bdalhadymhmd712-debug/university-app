@@ -6,19 +6,18 @@ import {
   LayoutDashboard, Calendar, BarChart3, ClipboardCheck,
   Megaphone, FolderOpen, Wallet, Library, FileText,
   MessageCircle, LogOut, Menu, X, Sun, Moon, GraduationCap,
-  User
+  User, Copyright
 } from 'lucide-react';
-  
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
+  const [showCopyright, setShowCopyright] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   const menu = [
-    { title: 'الملف الشخصي', icon: User, path: '/profile' },
     { title: 'الرئيسية', icon: LayoutDashboard, path: '/dashboard' },
     { title: 'الجداول الدراسية', icon: Calendar, path: '/schedule' },
     { title: 'النتائج', icon: BarChart3, path: '/grades' },
@@ -29,6 +28,8 @@ export default function Sidebar() {
     { title: 'المكتبة الرقمية', icon: Library, path: '/library' },
     { title: 'الطلبات الإدارية', icon: FileText, path: '/requests' },
     { title: 'التواصل', icon: MessageCircle, path: '/messages' },
+    { title: 'الملف الشخصي', icon: User, path: '/profile' },
+    { title: 'حقوق الملكية', icon: Copyright, path: '#copyright' },
   ];
 
   const handleLogout = () => {
@@ -77,7 +78,11 @@ export default function Sidebar() {
               <button
                 key={item.path}
                 onClick={() => {
-                  navigate(item.path);
+                  if (item.path === '#copyright') {
+                    setShowCopyright(true);
+                  } else {
+                    navigate(item.path);
+                  }
                   setOpen(false);
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-right transition-all
@@ -121,6 +126,47 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
+
+      {/* Modal حقوق الملكية */}
+      {showCopyright && (
+        <div
+          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in"
+          onClick={() => setShowCopyright(false)}
+        >
+          <div
+            className="glass rounded-3xl w-full max-w-md p-8 text-center relative glow-border animate-slide-up"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowCopyright(false)}
+              className="absolute top-4 left-4 p-2 rounded-lg hover:bg-slate-700/50 transition"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="w-20 h-20 mx-auto mb-5 rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-2xl shadow-indigo-500/40">
+              <Copyright size={40} className="text-white" />
+            </div>
+
+            <h3 className="text-2xl font-bold mb-2 bg-gradient-to-l from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+              حقوق الملكية الفكرية
+            </h3>
+
+            <div className="w-20 h-1 bg-gradient-to-l from-indigo-500 to-purple-500 rounded-full mx-auto mb-5"></div>
+
+            <p className="text-lg leading-relaxed opacity-90 mb-2">
+              تم تصميم المنصة بواسطة
+            </p>
+            <p className="text-xl font-bold bg-gradient-to-l from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+              عبدالهادي محمد آدم
+            </p>
+
+            <p className="text-xs opacity-50 mt-6">
+              © 2026 — جميع الحقوق محفوظة
+            </p>
+          </div>
+        </div>
+      )}
     </>
   );
 }
