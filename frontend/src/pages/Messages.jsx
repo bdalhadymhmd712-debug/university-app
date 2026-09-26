@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import {
-  Send, Heart, MessageCircle, Trash2, Filter, Sparkles
+  Send, Heart, MessageCircle, Trash2, Sparkles
 } from 'lucide-react';
 
 const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
@@ -14,7 +14,6 @@ export default function Messages() {
   const [loading, setLoading] = useState(true);
   const [text, setText] = useState('');
   const [category, setCategory] = useState('عام');
-  const [filter, setFilter] = useState('الكل');
   const [commentText, setCommentText] = useState({});
   const [openComments, setOpenComments] = useState({});
   const [posting, setPosting] = useState(false);
@@ -78,8 +77,6 @@ export default function Messages() {
     }
   };
 
-  const categories = ['الكل', 'عام', 'دراسي', 'سؤال', 'أنشطة', 'إعلان'];
-
   const categoryColor = (c) => {
     if (c === 'دراسي') return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
     if (c === 'سؤال') return 'bg-amber-500/20 text-amber-400 border-amber-500/30';
@@ -87,8 +84,6 @@ export default function Messages() {
     if (c === 'إعلان') return 'bg-red-500/20 text-red-400 border-red-500/30';
     return 'bg-slate-500/20 text-slate-300 border-slate-500/30';
   };
-
-  const filtered = posts.filter(p => filter === 'الكل' || p.category === filter);
 
   return (
     <Layout title="💬 التواصل" subtitle="شارك أفكارك وتواصل مع زملائك">
@@ -133,26 +128,9 @@ export default function Messages() {
         </div>
       </form>
 
-      <div className="flex items-center gap-2 mb-5 flex-wrap">
-        <Filter size={18} className="opacity-50" />
-        {categories.map(c => (
-          <button
-            key={c}
-            onClick={() => setFilter(c)}
-            className={`px-3 py-1.5 rounded-lg text-sm transition ${
-              filter === c
-                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30'
-                : 'bg-slate-700/40 hover:bg-slate-700/60'
-            }`}
-          >
-            {c}
-          </button>
-        ))}
-      </div>
-
       {loading ? (
         <div className="text-center text-xl p-10 animate-pulse">جاري التحميل...</div>
-      ) : filtered.length === 0 ? (
+      ) : posts.length === 0 ? (
         <div className="glass rounded-2xl p-10 text-center">
           <Sparkles size={48} className="mx-auto opacity-30 mb-3" />
           <p className="text-xl mb-2">لا توجد منشورات</p>
@@ -160,7 +138,7 @@ export default function Messages() {
         </div>
       ) : (
         <div className="space-y-5">
-          {filtered.map((post) => {
+          {posts.map((post) => {
             const liked = post.likes?.some(id => id === user?.id || id._id === user?.id);
             const isOwner = post.author === user?.id || post.author?._id === user?.id;
 

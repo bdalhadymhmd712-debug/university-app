@@ -42,7 +42,7 @@ function App() {
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/library" element={<PrivateRoute><Library /></PrivateRoute>} />
             <Route path="/requests" element={<PrivateRoute><Requests /></PrivateRoute>} />
-            <Route path="*" element={<Navigate to="/profile" />} />
+            <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

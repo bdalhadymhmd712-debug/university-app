@@ -25,7 +25,7 @@ export default function Register() {
     setLoading(true);
     try {
       await register({ ...form, role });
-      navigate('/profile');
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'خطأ في التسجيل');
     } finally {

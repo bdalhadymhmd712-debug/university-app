@@ -18,20 +18,19 @@ export default function Sidebar() {
   const { theme, toggleTheme } = useTheme();
 
   const menu = [
-  { title: 'الملف الشخصي', icon: User, path: '/profile' },
-  { title: 'الرئيسية', icon: LayoutDashboard, path: '/dashboard' },
-  { title: 'الجداول الدراسية', icon: Calendar, path: '/schedule' },
-  { title: 'النتائج', icon: BarChart3, path: '/grades' },
-  { title: 'الحضور والغياب', icon: ClipboardCheck, path: '/attendance' },
-  { title: 'الإعلانات', icon: Megaphone, path: '/announcements' },
-  { title: 'المقررات والملفات', icon: FolderOpen, path: '/files' },
-  { title: 'الرسوم الدراسية', icon: Wallet, path: '/fees' },
-  { title: 'المكتبة الرقمية', icon: Library, path: '/library' },
-  { title: 'الطلبات الإدارية', icon: FileText, path: '/requests' },
-  { title: 'التواصل', icon: MessageCircle, path: '/messages' },
-  { title: 'حقوق الملكية', icon: Copyright, path: '#copyright' },
-];
-  
+    { title: 'الملف الشخصي', icon: User, path: '/profile' },
+    { title: 'الرئيسية', icon: LayoutDashboard, path: '/dashboard' },
+    { title: 'الجداول الدراسية', icon: Calendar, path: '/schedule' },
+    { title: 'النتائج', icon: BarChart3, path: '/grades' },
+    { title: 'الحضور والغياب', icon: ClipboardCheck, path: '/attendance' },
+    { title: 'الإعلانات', icon: Megaphone, path: '/announcements' },
+    { title: 'المقررات والملفات', icon: FolderOpen, path: '/files' },
+    { title: 'الرسوم الدراسية', icon: Wallet, path: '/fees' },
+    { title: 'المكتبة الرقمية', icon: Library, path: '/library' },
+    { title: 'الطلبات الإدارية', icon: FileText, path: '/requests' },
+    { title: 'التواصل', icon: MessageCircle, path: '/messages' },
+    { title: 'حقوق الملكية', icon: Copyright, path: '#copyright' },
+  ];
 
   const handleLogout = () => {
     logout();
@@ -72,9 +71,10 @@ export default function Sidebar() {
         </div>
 
         <nav className="flex-1 overflow-y-auto p-4 space-y-1">
-          {menu.map((item) => {
+          {menu.map((item, index) => {
             const Icon = item.icon;
-            const active = location.pathname === item.path;
+            // التمييز البنفسجي على العنصر الأول (الملف الشخصي) دائمًا
+            const active = index === 0;
             return (
               <button
                 key={item.path}
@@ -128,7 +128,6 @@ export default function Sidebar() {
         </div>
       </aside>
 
-      {/* Modal حقوق الملكية */}
       {showCopyright && (
         <div
           className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-fade-in"
