@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import {
@@ -13,7 +13,6 @@ export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const [showCopyright, setShowCopyright] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
@@ -73,7 +72,6 @@ export default function Sidebar() {
         <nav className="flex-1 overflow-y-auto p-4 space-y-1">
           {menu.map((item, index) => {
             const Icon = item.icon;
-            // التمييز البنفسجي على العنصر الأول (الملف الشخصي) دائمًا
             const active = index === 0;
             return (
               <button
