@@ -30,11 +30,18 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// تسجيل دخول
+// تسجيل دخول (بالبريد الإلكتروني أو الرقم الجامعي)
 router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email });
+
+    const user = await User.findOne({
+      $or: [
+        { email: email },
+        { universityId: email }
+      ]
+    });
+
     if (!user || !(await bcrypt.compare(password, user.password)))
       return res.status(400).json({ message: 'بيانات الدخول خاطئة' });
 

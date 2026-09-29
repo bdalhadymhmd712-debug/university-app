@@ -48,8 +48,8 @@ export default function Login() {
         <div className="relative mb-4">
           <Mail className="absolute top-4 left-4 opacity-40" size={20} />
           <input
-            type="email"
-            placeholder="البريد الإلكتروني"
+            type="text"
+            placeholder="البريد الإلكتروني أو الرقم الجامعي"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
