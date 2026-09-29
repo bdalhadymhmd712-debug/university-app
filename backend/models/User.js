@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   universityId: { type: String, sparse: true },
   department:   { type: String },
   level:        { type: String },
+  fcmToken:     { type: String, default: '' },  // ← جديد: رمز الإشعارات
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', userSchema);

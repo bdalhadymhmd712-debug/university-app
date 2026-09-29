@@ -17,6 +17,7 @@ app.use('/api/files', require('./routes/files'));
 app.use('/api/posts', require('./routes/posts'));
 app.use('/api/library', require('./routes/library'));
 app.use('/api/requests', require('./routes/requests'));
+app.use('/api/notifications', require('./routes/notifications'));
 
 app.get('/', (req, res) => res.json({ status: 'API يعمل ✅' }));
 

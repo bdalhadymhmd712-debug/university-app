@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { requestNotificationPermission } from '../firebase';
 
 const AuthContext = createContext();
 
@@ -9,12 +10,27 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const setupNotifications = async () => {
+    try {
+      const token = await requestNotificationPermission();
+      if (token) {
+        await axios.post(`${API}/api/notifications/register-token`, { token });
+        console.log('✅ تم تسجيل الإشعارات');
+      }
+    } catch (err) {
+      console.error('خطأ في تسجيل الإشعارات:', err);
+    }
+  };
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       axios.get(`${API}/api/auth/me`)
-        .then(res => setUser(res.data))
+        .then(res => {
+          setUser(res.data);
+          setupNotifications();
+        })
         .catch(() => localStorage.removeItem('token'))
         .finally(() => setLoading(false));
     } else {
@@ -27,6 +43,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', res.data.token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
     setUser(res.data.user);
+    setupNotifications();
   };
 
   const register = async (data) => {
@@ -34,6 +51,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', res.data.token);
     axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.token}`;
     setUser(res.data.user);
+    setupNotifications();
   };
 
   const updateProfile = async (data) => {
