@@ -8,14 +8,13 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   const cards = [
-    { title: 'الطلاب', desc: 'إدارة بيانات الطلاب', icon: Users, path: '#', gradient: 'from-blue-500 to-cyan-500' },
+    { title: 'الطلاب', desc: 'إدارة بيانات الطلاب', icon: Users, path: '/students', gradient: 'from-blue-500 to-cyan-500' },
     { title: 'الغياب', desc: 'تسجيل الحضور والغياب', icon: BookOpen, path: '#', gradient: 'from-emerald-500 to-green-500' },
     { title: 'التراحيل', desc: 'معلومات الباصات', icon: Wallet, path: '#', gradient: 'from-amber-500 to-orange-500' },
   ];
 
   return (
-    <Layout title={`مرحبًا، ${user?.name?.split(' ')[0] || ''} 👋`} subtitle="لوحة التحكم الجديدة">
-      
+    <Layout title={`مرحبًا، ${user?.name?.split(' ')[0] || ''} 👋`} subtitle="لوحة التحكم">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {cards.map((card, i) => {
           const Icon = card.icon;
@@ -40,7 +39,6 @@ export default function Dashboard() {
           );
         })}
       </div>
-
     </Layout>
   );
 }

@@ -10,12 +10,12 @@ import {
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { logout } = useAuth(); // تم إزالة user من هنا
+  const { logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
 
   const menu = [
     { title: 'الرئيسية', icon: LayoutDashboard, path: '/dashboard' },
-    { title: 'الطلاب', icon: Users, path: '#' },
+    { title: 'الطلاب', icon: Users, path: '/students' },
     { title: 'الغياب', icon: BookOpen, path: '#' },
     { title: 'التراحيل', icon: Wallet, path: '#' },
     { title: 'الملف الشخصي', icon: User, path: '/profile' },
