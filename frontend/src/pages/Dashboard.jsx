@@ -1,13 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
-import { Plus, Users, BookOpen, Wallet } from 'lucide-react';
+import { Users, BookOpen, Wallet } from 'lucide-react';
 
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // هنا سنضع البطاقات الجديدة التي تريدها
   const cards = [
     { title: 'الطلاب', desc: 'إدارة بيانات الطلاب', icon: Users, path: '#', gradient: 'from-blue-500 to-cyan-500' },
     { title: 'الغياب', desc: 'تسجيل الحضور والغياب', icon: BookOpen, path: '#', gradient: 'from-emerald-500 to-green-500' },

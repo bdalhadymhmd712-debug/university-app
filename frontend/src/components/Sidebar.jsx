@@ -10,7 +10,7 @@ import {
 export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { logout } = useAuth(); // تم إزالة user من هنا
   const { theme, toggleTheme } = useTheme();
 
   const menu = [
@@ -59,7 +59,7 @@ export default function Sidebar() {
         <nav className="flex-1 overflow-y-auto p-4 space-y-1">
           {menu.map((item) => {
             const Icon = item.icon;
-            const active = item.path === '/dashboard' ? true : false; // التمييز على الرئيسية فقط
+            const active = item.path === '/dashboard' ? true : false;
             return (
               <button
                 key={item.title}
