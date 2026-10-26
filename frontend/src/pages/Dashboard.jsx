@@ -9,7 +9,7 @@ export default function Dashboard() {
 
   const cards = [
     { title: 'الطلاب', desc: 'إدارة بيانات الطلاب', icon: Users, path: '/students', gradient: 'from-blue-500 to-cyan-500' },
-    { title: 'الغياب', desc: 'تسجيل الحضور والغياب', icon: BookOpen, path: '#', gradient: 'from-emerald-500 to-green-500' },
+    { title: 'الغياب', desc: 'تسجيل الحضور والغياب', icon: BookOpen, path: '/attendance', gradient: 'from-emerald-500 to-green-500' }, // تم التعديل
     { title: 'التراحيل', desc: 'معلومات الباصات', icon: Wallet, path: '#', gradient: 'from-amber-500 to-orange-500' },
   ];
 
