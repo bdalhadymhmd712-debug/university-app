@@ -4,7 +4,8 @@ const auth = require('../middleware/auth');
 
 router.get('/', auth, async (req, res) => {
   try {
-    const students = await Student.find().sort({ createdAt: -1 });
+    const query = req.query.grade ? { grade: req.query.grade } : {};
+    const students = await Student.find(query).sort({ createdAt: -1 });
     res.json(students);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });

@@ -4,11 +4,12 @@ import axios from 'axios';
 import { User, Plus, X, Send, Trash2, Phone, MapPin } from 'lucide-react';
 
 const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const GRADES = ['الصف الأول', 'الصف الثاني', 'الصف الثالث', 'الصف الرابع', 'الصف الخامس', 'الصف السادس', 'أولى متوسط', 'ثانية متوسط', 'ثالثة متوسط'];
 
 export default function Students() {
   const [students, setStudents] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [form, setForm] = useState({ fullName: '', guardianName: '', address: '', guardianPhone: '' });
+  const [form, setForm] = useState({ fullName: '', guardianName: '', address: '', guardianPhone: '', grade: 'الصف الأول' });
 
   useEffect(() => { loadStudents(); }, []);
   
@@ -18,7 +19,7 @@ export default function Students() {
     e.preventDefault();
     await axios.post(`${API}/api/students`, form);
     setShowModal(false);
-    setForm({ fullName: '', guardianName: '', address: '', guardianPhone: '' });
+    setForm({ fullName: '', guardianName: '', address: '', guardianPhone: '', grade: 'الصف الأول' });
     loadStudents();
   };
 
@@ -39,8 +40,9 @@ export default function Students() {
         {students.map(s => (
           <div key={s._id} className="glass rounded-2xl p-5 relative group">
             <button onClick={() => handleDelete(s._id)} className="absolute top-3 left-3 text-red-400 opacity-0 group-hover:opacity-100"><Trash2 size={18}/></button>
-            <h3 className="text-lg font-bold mb-2">{s.fullName}</h3>
-            <p className="text-sm opacity-70 mb-1"><User size={14} className="inline"/> ولي الأمر: {s.guardianName}</p>
+            <span className="text-xs bg-blue-500/20 text-blue-300 px-2 py-1 rounded-full">{s.grade}</span>
+            <h3 className="text-lg font-bold mb-2 mt-2">{s.fullName}</h3>
+            <p className="text-sm opacity-70 mb-1"><User size={14} className="inline"/> {s.guardianName}</p>
             <p className="text-sm opacity-70 mb-1"><Phone size={14} className="inline"/> {s.guardianPhone}</p>
             <p className="text-sm opacity-70"><MapPin size={14} className="inline"/> {s.address}</p>
           </div>
@@ -51,6 +53,11 @@ export default function Students() {
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
           <form onSubmit={handleSubmit} className="glass p-6 rounded-2xl w-full max-w-md">
             <div className="flex justify-between mb-4"><h3 className="font-bold text-xl">إضافة طالب</h3><button type="button" onClick={()=>setShowModal(false)}><X/></button></div>
+            
+            <select className="w-full p-3 mb-3 bg-slate-800 rounded-xl" onChange={e=>setForm({...form, grade: e.target.value})} value={form.grade}>
+              {GRADES.map(g => <option key={g} value={g}>{g}</option>)}
+            </select>
+
             <input required placeholder="الاسم الرباعي" className="w-full p-3 mb-3 bg-slate-800 rounded-xl" onChange={e=>setForm({...form, fullName: e.target.value})} value={form.fullName}/>
             <input required placeholder="ولي الأمر" className="w-full p-3 mb-3 bg-slate-800 rounded-xl" onChange={e=>setForm({...form, guardianName: e.target.value})} value={form.guardianName}/>
             <input required placeholder="رقم الهاتف" className="w-full p-3 mb-3 bg-slate-800 rounded-xl" onChange={e=>setForm({...form, guardianPhone: e.target.value})} value={form.guardianPhone}/>

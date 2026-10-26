@@ -5,6 +5,7 @@ const studentSchema = new mongoose.Schema({
   guardianName:  { type: String, required: true },
   address:       { type: String, default: '' },
   guardianPhone: { type: String, required: true },
+  grade:         { type: String, required: true, default: 'الصف الأول' }, // ← حقل جديد
   createdBy:     { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 }, { timestamps: true });
 
