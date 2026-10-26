@@ -18,6 +18,7 @@ app.use('/api/posts', require('./routes/posts'));
 app.use('/api/library', require('./routes/library'));
 app.use('/api/requests', require('./routes/requests'));
 app.use('/api/students', require('./routes/students'));
+app.use('/api/attendance', require('./routes/attendance'));
 app.get('/', (req, res) => res.json({ status: 'API يعمل ✅' }));
 
 mongoose.connect(process.env.MONGO_URI)
