@@ -16,8 +16,8 @@ export default function Sidebar() {
   const menu = [
     { title: 'الرئيسية', icon: LayoutDashboard, path: '/dashboard' },
     { title: 'الطلاب', icon: Users, path: '/students' },
-    { title: 'الغياب', icon: BookOpen, path: '/attendance' }, // تم التعديل
-    { title: 'التراحيل', icon: Wallet, path: '#' },
+    { title: 'الغياب', icon: BookOpen, path: '/attendance' },
+    { title: 'التراحيل', icon: Wallet, path: '/transport' },
     { title: 'الملف الشخصي', icon: User, path: '/profile' },
   ];
 
