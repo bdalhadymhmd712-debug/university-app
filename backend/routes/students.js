@@ -19,14 +19,21 @@ router.post('/', auth, async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-// مسار البحث بالاسم (جديد)
+// البحث بالاسم
 router.get('/search', auth, async (req, res) => {
   try {
     const { q } = req.query;
     if (!q) return res.json([]);
-    // البحث عن أي طالب يحتوي اسمه على النص المدخل (غير حساس لحالة الأحرف)
     const students = await Student.find({ fullName: { $regex: q, $options: 'i' } }).limit(5);
     res.json(students);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+// تعديل بيانات طالب (جديد)
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(student);
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
