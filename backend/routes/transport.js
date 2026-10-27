@@ -48,4 +48,20 @@ router.put('/students/:id/pay', auth, async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
+// تعديل بيانات الطالب (جديد)
+router.put('/students/:id', auth, async (req, res) => {
+  try {
+    const student = await TransportStudent.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    res.json(student);
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
+// حذف الطالب (جديد)
+router.delete('/students/:id', auth, async (req, res) => {
+  try {
+    await TransportStudent.findByIdAndDelete(req.params.id);
+    res.json({ message: 'تم الحذف' });
+  } catch (err) { res.status(500).json({ message: err.message }); }
+});
+
 module.exports = router;

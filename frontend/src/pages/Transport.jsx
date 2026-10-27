@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Layout from '../components/Layout';
 import axios from 'axios';
-import { ArrowRight, User, Phone, MapPin, Plus, X, Send, CheckCircle } from 'lucide-react';
+import { ArrowRight, User, Phone, MapPin, Plus, X, Send, CheckCircle, MoreVertical, Edit, Trash2 } from 'lucide-react';
 
 const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
@@ -19,6 +19,11 @@ export default function Transport() {
   const [form, setForm] = useState({ studentName: '', address: '', guardianPhone: '' });
   const [editingDriver, setEditingDriver] = useState(false);
   const [driverForm, setDriverForm] = useState({});
+  
+  // حالات القائمة المنسدلة والتعديل
+  const [openMenuId, setOpenMenuId] = useState(null);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [editStudentForm, setEditStudentForm] = useState({ studentName: '', address: '', guardianPhone: '' });
 
   useEffect(() => {
     if (step === 3 && area) {
@@ -37,6 +42,30 @@ export default function Transport() {
     setShowModal(false);
     setForm({ studentName: '', address: '', guardianPhone: '' });
     axios.get(`${API}/api/transport/students?transportId=${transport._id}`).then(r => setStudents(r.data));
+  };
+
+  const handleDeleteStudent = async (id) => {
+    if (!window.confirm('هل أنت متأكد من حذف هذا الطالب؟')) return;
+    await axios.delete(`${API}/api/transport/students/${id}`);
+    setStudents(students.filter(s => s._id !== id));
+    setOpenMenuId(null);
+  };
+
+  const handleEditStudent = (student) => {
+    setEditingStudent(student._id);
+    setEditStudentForm({
+      studentName: student.studentName,
+      address: student.address,
+      guardianPhone: student.guardianPhone
+    });
+    setOpenMenuId(null);
+  };
+
+  const submitEditStudent = async (e) => {
+    e.preventDefault();
+    const res = await axios.put(`${API}/api/transport/students/${editingStudent}`, editStudentForm);
+    setStudents(students.map(s => s._id === editingStudent ? res.data : s));
+    setEditingStudent(null);
   };
 
   const handlePay = async (studentId, month) => {
@@ -110,10 +139,23 @@ export default function Transport() {
 
       <div className="space-y-4">
         {students.map(s => (
-          <div key={s._id} className="glass p-4 rounded-xl">
+          <div key={s._id} className="glass p-4 rounded-xl relative">
             <div className="flex justify-between mb-2">
               <h3 className="font-bold">{s.studentName}</h3>
-              <span className="text-xs opacity-60">{s.address} | {s.guardianPhone}</span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs opacity-60">{s.address} | {s.guardianPhone}</span>
+                <div className="relative">
+                  <button onClick={() => setOpenMenuId(openMenuId === s._id ? null : s._id)} className="p-1 rounded hover:bg-slate-700">
+                    <MoreVertical size={18} />
+                  </button>
+                  {openMenuId === s._id && (
+                    <div className="absolute left-0 top-full mt-1 bg-slate-800 border border-slate-700 rounded-lg shadow-xl w-32 z-10 overflow-hidden">
+                      <button onClick={() => handleEditStudent(s)} className="w-full text-right px-4 py-2 hover:bg-slate-700 flex items-center gap-2"><Edit size={14}/> تعديل</button>
+                      <button onClick={() => handleDeleteStudent(s._id)} className="w-full text-right px-4 py-2 hover:bg-red-500/20 text-red-400 flex items-center gap-2"><Trash2 size={14}/> حذف</button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="flex flex-wrap gap-1 mt-2">
               {MONTHS.map(m => {
@@ -129,6 +171,7 @@ export default function Transport() {
         ))}
       </div>
 
+      {/* نموذج إضافة طالب */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
           <form onSubmit={handleAddStudent} className="glass p-6 rounded-2xl w-full max-w-md">
@@ -137,6 +180,19 @@ export default function Transport() {
             <input required placeholder="السكن" onChange={e=>setForm({...form, address: e.target.value})} value={form.address} className="w-full p-3 mb-3 bg-slate-800 rounded-xl"/>
             <input required placeholder="رقم هاتف ولي الأمر" onChange={e=>setForm({...form, guardianPhone: e.target.value})} value={form.guardianPhone} className="w-full p-3 mb-4 bg-slate-800 rounded-xl"/>
             <button type="submit" className="w-full py-3 bg-blue-600 rounded-xl font-bold flex justify-center gap-2"><Send size={18}/> إضافة</button>
+          </form>
+        </div>
+      )}
+
+      {/* نموذج تعديل طالب */}
+      {editingStudent && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+          <form onSubmit={submitEditStudent} className="glass p-6 rounded-2xl w-full max-w-md">
+            <div className="flex justify-between mb-4"><h3 className="font-bold">تعديل بيانات الطالب</h3><button type="button" onClick={()=>setEditingStudent(null)}><X/></button></div>
+            <input required placeholder="اسم الطالب" onChange={e=>setEditStudentForm({...editStudentForm, studentName: e.target.value})} value={editStudentForm.studentName} className="w-full p-3 mb-3 bg-slate-800 rounded-xl"/>
+            <input required placeholder="السكن" onChange={e=>setEditStudentForm({...editStudentForm, address: e.target.value})} value={editStudentForm.address} className="w-full p-3 mb-3 bg-slate-800 rounded-xl"/>
+            <input required placeholder="رقم هاتف ولي الأمر" onChange={e=>setEditStudentForm({...editStudentForm, guardianPhone: e.target.value})} value={editStudentForm.guardianPhone} className="w-full p-3 mb-4 bg-slate-800 rounded-xl"/>
+            <button type="submit" className="w-full py-3 bg-emerald-600 rounded-xl font-bold flex justify-center gap-2"><Send size={18}/> حفظ التعديلات</button>
           </form>
         </div>
       )}
