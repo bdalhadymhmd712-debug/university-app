@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Students from './pages/Students';
 import Attendance from './pages/Attendance';
+import AttendanceHistory from './pages/AttendanceHistory';
 import Transport from './pages/Transport';
 
 const PrivateRoute = ({ children }) => {
@@ -31,6 +32,7 @@ function App() {
             <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
             <Route path="/students" element={<PrivateRoute><Students /></PrivateRoute>} />
             <Route path="/attendance" element={<PrivateRoute><Attendance /></PrivateRoute>} />
+            <Route path="/attendance-history" element={<PrivateRoute><AttendanceHistory /></PrivateRoute>} />
             <Route path="/transport" element={<PrivateRoute><Transport /></PrivateRoute>} />
             <Route path="*" element={<Navigate to="/dashboard" />} />
           </Routes>

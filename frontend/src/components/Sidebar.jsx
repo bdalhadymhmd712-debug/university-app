@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import {
-  LayoutDashboard, Users, BookOpen, Wallet, User,
+  LayoutDashboard, Users, BookOpen, Wallet, User, Calendar,
   LogOut, Menu, X, Sun, Moon, GraduationCap
 } from 'lucide-react';
 
@@ -17,6 +17,7 @@ export default function Sidebar() {
     { title: 'الرئيسية', icon: LayoutDashboard, path: '/dashboard' },
     { title: 'الطلاب', icon: Users, path: '/students' },
     { title: 'الغياب', icon: BookOpen, path: '/attendance' },
+    { title: 'سجل الحضور', icon: Calendar, path: '/attendance-history' },
     { title: 'التراحيل', icon: Wallet, path: '/transport' },
     { title: 'الملف الشخصي', icon: User, path: '/profile' },
   ];
