@@ -46,7 +46,6 @@ export default function Dashboard() {
   return (
     <Layout title={`مرحبًا، ${user?.name?.split(' ')[0] || ''} 👋`} subtitle="لوحة التحكم">
       
-      {/* شريط البحث */}
       <div className="glass rounded-2xl p-4 mb-8 relative z-20">
         <div className="relative">
           <Search className="absolute top-3.5 right-4 opacity-50" size={20} />
@@ -66,11 +65,16 @@ export default function Dashboard() {
             ) : (
               searchResults.map(s => (
                 <div key={s._id} className="p-3 border-b border-slate-700 last:border-0 hover:bg-slate-700 cursor-pointer flex justify-between items-center" onClick={() => {
-                  alert(`الطالب: ${s.fullName}\nالصف: ${s.grade}\nولي الأمر: ${s.guardianName}\nالهاتف: ${s.guardianPhone}`);
+                  alert(`الاسم: ${s.fullName}\nالنوع: ${s.type}\nالصف: ${s.grade || '—'}\nولي الأمر: ${s.guardianName || '—'}\nالهاتف: ${s.guardianPhone}`);
                   setShowResults(false);
                 }}>
                   <div>
-                    <div className="font-bold">{s.fullName}</div>
+                    <div className="font-bold flex items-center gap-2">
+                      {s.fullName}
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded ${s.type === 'ترحيل' ? 'bg-amber-500/20 text-amber-300' : 'bg-blue-500/20 text-blue-300'}`}>
+                        {s.type}
+                      </span>
+                    </div>
                     <div className="text-xs opacity-60">{s.grade}</div>
                   </div>
                   <div className="text-xs opacity-60 text-left">
