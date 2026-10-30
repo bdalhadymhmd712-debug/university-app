@@ -38,8 +38,14 @@ export default function Dashboard() {
 
   const handleSearchResultClick = (s) => {
     if (s.type === 'ترحيل') {
-      // الانتقال لصفحة التراحيل مع تمرير الحي والنوع عبر الرابط (State)
-      navigate('/transport', { state: { directArea: s.area, directType: s.transportType } });
+      // الانتقال لصفحة التراحيل مع تمرير الحي والنوع ومعرف الطالب
+      navigate('/transport', { 
+        state: { 
+          directArea: s.area, 
+          directType: s.transportType,
+          studentId: s._id // تمت الإضافة
+        } 
+      });
     } else {
       alert(`الطالب: ${s.fullName}\nالصف: ${s.grade}\nولي الأمر: ${s.guardianName}\nالهاتف: ${s.guardianPhone}`);
     }

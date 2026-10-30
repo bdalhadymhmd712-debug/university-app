@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom'; // تمت الإضافة لاستقبال بيانات البحث
+import { useLocation } from 'react-router-dom';
 import Layout from '../components/Layout';
 import axios from 'axios';
 import { ArrowRight, User, Phone, MapPin, Plus, X, Send, CheckCircle, MoreVertical, Edit, Trash2 } from 'lucide-react';
@@ -11,7 +11,7 @@ const AREAS_KG = ['الإسكان', 'سلالاب'];
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 
 export default function Transport() {
-  const location = useLocation(); // لاستقبال البيانات من صفحة البحث
+  const location = useLocation();
   const [step, setStep] = useState(1);
   const [type, setType] = useState(null);
   const [area, setArea] = useState(null);
@@ -26,12 +26,18 @@ export default function Transport() {
   const [editingStudent, setEditingStudent] = useState(null);
   const [editStudentForm, setEditStudentForm] = useState({ studentName: '', address: '', guardianPhone: '' });
 
-  // استقبال البيانات عند القدوم من البحث
+  // استقبال البيانات من البحث (الحي + نوع الترحيل + معرف الطالب)
+  const [highlightedStudentId, setHighlightedStudentId] = useState(null);
+
   useEffect(() => {
     if (location.state && location.state.directArea) {
       setType(location.state.directType === 'مدرسة' ? 'school' : 'kindergarten');
       setArea(location.state.directArea);
       setStep(3);
+      
+      if (location.state.studentId) {
+        setHighlightedStudentId(location.state.studentId);
+      }
     }
   }, [location.state]);
 
@@ -117,7 +123,7 @@ export default function Transport() {
 
   return (
     <Layout title={`🚌 ${area}`} subtitle="تفاصيل الترحيل">
-      <button onClick={() => { setStep(2); setArea(null); }} className="mb-4 flex items-center gap-2 text-indigo-400"><ArrowRight size={18} /> تغيير الحي</button>
+      <button onClick={() => { setStep(2); setArea(null); setHighlightedStudentId(null); }} className="mb-4 flex items-center gap-2 text-indigo-400"><ArrowRight size={18} /> تغيير الحي</button>
 
       <div className="glass p-6 rounded-2xl mb-6">
         {editingDriver ? (
@@ -147,9 +153,36 @@ export default function Transport() {
         <span>إضافة طالب</span> <Plus />
       </button>
 
+      {/* عرض الطالب المحدد (إذا تم البحث عنه) */}
+      {highlightedStudentId && students.some(s => s._id === highlightedStudentId) && (
+        <div className="mb-8">
+          <h3 className="text-lg font-bold mb-3 text-indigo-400 flex items-center gap-2">
+            <User size={20} /> الطالب الذي بحثت عنه:
+          </h3>
+          {students.filter(s => s._id === highlightedStudentId).map(s => (
+            <div key={s._id} className="glass p-5 rounded-2xl border-2 border-indigo-500 shadow-lg shadow-indigo-500/20">
+              <h3 className="font-bold text-xl mb-2">{s.studentName}</h3>
+              <p className="text-sm opacity-80 mb-3">{s.address} | {s.guardianPhone}</p>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {MONTHS.map(m => {
+                  const isPaid = s.paidMonths?.includes(m);
+                  return (
+                    <button key={m} onClick={() => handlePay(s._id, m)} className={`px-3 py-1.5 text-sm rounded-lg transition-all ${isPaid ? 'bg-green-500 text-white shadow-md' : 'bg-slate-700 text-slate-300 hover:bg-slate-600'}`}>
+                      شهر {m} {isPaid && <CheckCircle size={14} className="inline mr-1"/>}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <hr className="border-slate-700 my-6" />
+          <h3 className="text-sm font-bold opacity-60 mb-3">باقي طلاب الحي:</h3>
+        </div>
+      )}
+
       <div className="space-y-4">
         {students.map(s => (
-          <div key={s._id} className="glass p-4 rounded-xl relative">
+          <div key={s._id} className={`glass p-4 rounded-xl relative ${s._id === highlightedStudentId ? 'opacity-50' : ''}`}>
             <div className="flex justify-between mb-2">
               <h3 className="font-bold">{s.studentName}</h3>
               <div className="flex items-center gap-2">
