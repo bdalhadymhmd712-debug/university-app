@@ -36,6 +36,16 @@ export default function Dashboard() {
     }
   };
 
+  const handleSearchResultClick = (s) => {
+    if (s.type === 'ترحيل') {
+      // الانتقال لصفحة التراحيل مع تمرير الحي والنوع عبر الرابط (State)
+      navigate('/transport', { state: { directArea: s.area, directType: s.transportType } });
+    } else {
+      alert(`الطالب: ${s.fullName}\nالصف: ${s.grade}\nولي الأمر: ${s.guardianName}\nالهاتف: ${s.guardianPhone}`);
+    }
+    setShowResults(false);
+  };
+
   const cards = [
     { title: 'الطلاب', desc: 'إدارة بيانات الطلاب', icon: Users, path: '/students', gradient: 'from-blue-500 to-cyan-500' },
     { title: 'الغياب', desc: 'تسجيل الحضور والغياب', icon: BookOpen, path: '/attendance', gradient: 'from-emerald-500 to-green-500' },
@@ -64,10 +74,7 @@ export default function Dashboard() {
               <div className="p-4 text-center opacity-60 text-sm">لا توجد نتائج</div>
             ) : (
               searchResults.map(s => (
-                <div key={s._id} className="p-3 border-b border-slate-700 last:border-0 hover:bg-slate-700 cursor-pointer flex justify-between items-center" onClick={() => {
-                  alert(`الاسم: ${s.fullName}\nالنوع: ${s.type}\nالصف: ${s.grade || '—'}\nولي الأمر: ${s.guardianName || '—'}\nالهاتف: ${s.guardianPhone}`);
-                  setShowResults(false);
-                }}>
+                <div key={s._id} onClick={() => handleSearchResultClick(s)} className="p-3 border-b border-slate-700 last:border-0 hover:bg-slate-700 cursor-pointer flex justify-between items-center">
                   <div>
                     <div className="font-bold flex items-center gap-2">
                       {s.fullName}
@@ -75,11 +82,10 @@ export default function Dashboard() {
                         {s.type}
                       </span>
                     </div>
-                    <div className="text-xs opacity-60">{s.grade}</div>
+                    <div className="text-xs opacity-60">{s.type === 'ترحيل' ? `${s.transportType} - ${s.area}` : s.grade}</div>
                   </div>
                   <div className="text-xs opacity-60 text-left">
                     <div><Phone size={12} className="inline"/> {s.guardianPhone}</div>
-                    <div><MapPin size={12} className="inline"/> {s.address}</div>
                   </div>
                 </div>
               ))

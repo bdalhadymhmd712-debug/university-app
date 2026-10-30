@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const Student = require('../models/Student');
-const TransportStudent = require('../models/TransportStudent'); // استيراد جدول التراحيل
+const TransportStudent = require('../models/TransportStudent'); // استيراد جدول طلاب التراحيل
 const auth = require('../middleware/auth');
 
 // جلب الطلاب (مع إمكانية الفلترة بالصف)
@@ -20,26 +20,29 @@ router.post('/', auth, async (req, res) => {
   } catch (err) { res.status(500).json({ message: err.message }); }
 });
 
-// البحث الشامل (في الطلاب وطلاب التراحيل)
+// البحث الشامل (في الطلاب وطلاب التراحيل مع جلب بيانات الحي)
 router.get('/search', auth, async (req, res) => {
   try {
     const { q } = req.query;
     if (!q) return res.json([]);
 
-    // البحث في جدول الطلاب
     const students = await Student.find({ fullName: { $regex: q, $options: 'i' } }).limit(5);
     
-    // البحث في جدول طلاب التراحيل
-    const transportStudents = await TransportStudent.find({ studentName: { $regex: q, $options: 'i' } }).limit(5);
+    // البحث في طلاب التراحيل مع تعبئة بيانات جدول Transport (للحصول على الحي والنوع)
+    const transportStudents = await TransportStudent.find({ studentName: { $regex: q, $options: 'i' } })
+      .populate('transport') // هذا السطر مهم جداً لجلب الحي والنوع
+      .limit(5);
 
-    // دمج النتائج وإضافة حقل النوع لتمييزهم في الواجهة
+    // دمج النتائج وإضافة حقل النوع
     const combined = [
       ...students.map(s => ({ ...s._doc, type: 'طالب' })),
       ...transportStudents.map(ts => ({ 
         ...ts._doc, 
-        fullName: ts.studentName, // توحيد اسم الحقل للواجهة
+        fullName: ts.studentName,
         type: 'ترحيل',
-        grade: 'ترحيل' // لأن طلاب التراحيل ليس لهم صف
+        area: ts.transport?.area || 'غير محدد',
+        transportType: ts.transport?.type || 'غير محدد',
+        grade: 'ترحيل'
       }))
     ];
 

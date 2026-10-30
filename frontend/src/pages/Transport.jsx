@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom'; // تمت الإضافة لاستقبال بيانات البحث
 import Layout from '../components/Layout';
 import axios from 'axios';
 import { ArrowRight, User, Phone, MapPin, Plus, X, Send, CheckCircle, MoreVertical, Edit, Trash2 } from 'lucide-react';
@@ -10,6 +11,7 @@ const AREAS_KG = ['الإسكان', 'سلالاب'];
 const MONTHS = Array.from({ length: 12 }, (_, i) => i + 1);
 
 export default function Transport() {
+  const location = useLocation(); // لاستقبال البيانات من صفحة البحث
   const [step, setStep] = useState(1);
   const [type, setType] = useState(null);
   const [area, setArea] = useState(null);
@@ -20,10 +22,18 @@ export default function Transport() {
   const [editingDriver, setEditingDriver] = useState(false);
   const [driverForm, setDriverForm] = useState({});
   
-  // حالات القائمة المنسدلة والتعديل
   const [openMenuId, setOpenMenuId] = useState(null);
   const [editingStudent, setEditingStudent] = useState(null);
   const [editStudentForm, setEditStudentForm] = useState({ studentName: '', address: '', guardianPhone: '' });
+
+  // استقبال البيانات عند القدوم من البحث
+  useEffect(() => {
+    if (location.state && location.state.directArea) {
+      setType(location.state.directType === 'مدرسة' ? 'school' : 'kindergarten');
+      setArea(location.state.directArea);
+      setStep(3);
+    }
+  }, [location.state]);
 
   useEffect(() => {
     if (step === 3 && area) {
@@ -107,7 +117,7 @@ export default function Transport() {
 
   return (
     <Layout title={`🚌 ${area}`} subtitle="تفاصيل الترحيل">
-      <button onClick={() => setStep(2)} className="mb-4 flex items-center gap-2 text-indigo-400"><ArrowRight size={18} /> تغيير الحي</button>
+      <button onClick={() => { setStep(2); setArea(null); }} className="mb-4 flex items-center gap-2 text-indigo-400"><ArrowRight size={18} /> تغيير الحي</button>
 
       <div className="glass p-6 rounded-2xl mb-6">
         {editingDriver ? (
@@ -171,7 +181,6 @@ export default function Transport() {
         ))}
       </div>
 
-      {/* نموذج إضافة طالب */}
       {showModal && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
           <form onSubmit={handleAddStudent} className="glass p-6 rounded-2xl w-full max-w-md">
@@ -184,7 +193,6 @@ export default function Transport() {
         </div>
       )}
 
-      {/* نموذج تعديل طالب */}
       {editingStudent && (
         <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
           <form onSubmit={submitEditStudent} className="glass p-6 rounded-2xl w-full max-w-md">
